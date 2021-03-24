@@ -1,0 +1,72 @@
+Data races
+==========
+
+Principal references
+--------------------
+
+[C11]: http://www.open-std.org/jtc1/sc22/wg14/www/standards
+[memory barriers]: Documentation/memory-barriers.txt
+[LKMM]: tools/memory-model/Documentation/README
+
+
+Data races are UB
+-----------------
+
+At the language level, C11 defines data races as:
+
+> The execution of a program contains a data race if it contains two
+> conflicting actions in different threads, at least one of which is not
+> atomic, and neither happens before the other.
+
+and
+
+> Any such data race results in undefined behavior.
+
+So, the program's behavior can be affected by both hardware reordering of
+memory accesses any myriad of compiler optimizations.[1]
+
+(It seems that UB itself is not tabu in the kernel; it just places a burden on
+the maintainers to make sure that such code works correctly on all compiler
+versions and architectures).
+
+[1]: https://lwn.net/Articles/793253/ ("Who's afraid of a big bad optimizing compiler?")
+
+
+Simple memory-ordering lives
+----------------------------
+[LKMM]/simple.txt
+
+- use single-threaded code; may need a global lock to ensure this;
+- use library functions: /lib, much of include/linux/, etc;
+- use data locking;
+- use per-CPU processing;
+- use sequence locking (include/linux/seqlock.h) with no writes in read-side
+  code;
+- use RCU with: no writes in read-side code, no updates to locations visible
+  to/accessed by readers, protect updates with locking;
+- use atomic operations: Documentation/atomic*, Documentation/core-api/*atomic*
+- use atomic_set/atomic_get and then fully ordered operations
+- for statistics and heuristics, be careful but use unordered atomic
+  primitives and READ|WRITE_ONCE()
+
+Not simple: plan C-language accesses for lockless loads and stores to shared
+variables.
+
+
+READ_ONCE/WRITE_ONCE
+--------------------
+include/linux/rwonce.h
+
+[ ... ]
+
+Before there was: ACCESS_ONCE, READ_ONCE and ASSIGN_ONCE.
+
+
+TODO
+----
+
+- take notes on Intel 64/IA-32 relatively strong implied ordering
+- take notes on Intel 64/IA-32 atomicity of loads/stores
+- take notes on typical sizes of scalar types
+- check usage of jiffies
+- check seqlocks
