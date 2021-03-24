@@ -5,8 +5,8 @@ Principal references
 --------------------
 
 [C11]: http://www.open-std.org/jtc1/sc22/wg14/www/standards
-[memory barriers]: Documentation/memory-barriers.txt
 [LKMM]: tools/memory-model/Documentation/README
+[memory barriers]: Documentation/memory-barriers.txt
 
 
 Data races are UB
@@ -55,11 +55,87 @@ variables.
 
 READ_ONCE/WRITE_ONCE
 --------------------
-include/linux/rwonce.h
+include/asm-generic/rwonce.h
 
-[ ... ]
+> Prevent the compiler from merging or refetching reads or writes. The compiler
+> is also forbidden from reordering successive instances of READ_ONCE and
+> WRITE_ONCE, but only when the compiler is aware of some particular ordering.
+> One way to make the compiler aware of ordering is to put the two invocations
+> of READ_ONCE or WRITE_ONCE in different C statements.
+>
+> These two macros will also work on aggregate data types like structs or
+> unions.
+>
+> Their two major use cases are:
+>
+> (1) Mediating communication between process-level code and irq/NMI handlers,
+> all running on the same CPU,
 
-Before there was: ACCESS_ONCE, READ_ONCE and ASSIGN_ONCE.
+TODO Why "running on the same CPU"?
+
+>, and (2) Ensuring that the compiler does not fold, spindle, or otherwise
+>mutilate accesses that either do not require ordering or that interact with an
+>explicit memory barrier or atomic instruction that provides the required
+>ordering.
+
+READ_ONCE() is usually more important that WRITE_ONCE():[1]
+
+> [...] there are often _obvious_ reasons to use READ_ONCE().
+>
+> I really do not find the same to be true of WRITE_ONCE(). There are valid
+> uses, but they are definitely much less common, and much less obvious.
+
+In practice, READ_ONCE() and WRITE_ONCE() do the respective reads and writes in
+a temporarily volatile manner.
+
+Note: before there was: ACCESS_ONCE, READ_ONCE and ASSIGN_ONCE.
+
+[1] https://lore.kernel.org/lkml/CAHk-=wiOhiAJVU71968tAND6rrEJSaYPg7DXK6Y6iiz7_RJACw@mail.gmail.com/
+
+
+Barriers
+--------
+[LKMM]/ordering.txt
+[memory barriers]
+
+- add comments when using memory-ordering primitives
+- full memory barrier:
+    - smb_mb()
+    - RMW atomic ops that return values and do not end in _acquire, _release or
+      _relaxed
+    - [ ... ]
+- RMW ordering augmentation memory barrier:
+    - for efficiency of more strongly ordered architectures, after
+      non-value-returning RMW atomic ops
+    - smp_mb__before_atomic()
+    - smp_mb__after_atomic()
+    - smp_mb__after_spinlock()
+    - smp_mb__after_srcu_read_unlock()
+- write memory barrier:
+    - smp_wmb()
+    - orders stores before and after the barrier (is stronger than a release
+      barrier)
+    - watch out for store-to-load transformations when using plain stores
+- read memory barrier:
+    - smp_rmb()
+    - order reads before and after the barrier (is stronger than a acquire
+      barrier)
+    - "you are usually better using an acquire load"
+- compiler barrier:
+    - barrier()
+- all memory barriers imply compiler barriers, even if SMP is disabled
+- SMP memory barriers are reduced to compiler barriers on non-SMP systems
+  "because it is assumed that a CPU will appear to be self-consistent, and will
+  order overlapping accesses correctly with respect to itself."
+- SMP memory barriers do not control MMIO effects
+- mandatory memory barriers (mb, wmb, rmb) should not be used to control SMP
+  effects; they may be used to control MMIO effects
+- there are virt_ memory barriers for when virtualized guests may need to
+  synchronize with SMP hosts
+- [ ... ]
+
+TODO non smp_ memory barriers
+TODO complete
 
 
 TODO
