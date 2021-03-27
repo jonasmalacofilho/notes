@@ -88,9 +88,13 @@ READ_ONCE() is usually more important that WRITE_ONCE():[1]
 In practice, READ_ONCE() and WRITE_ONCE() do the respective reads and writes in
 a temporarily volatile manner.
 
+Note: do not use volatile on the data.[2][3]
+
 Note: before there was: ACCESS_ONCE, READ_ONCE and ASSIGN_ONCE.
 
 [1] https://lore.kernel.org/lkml/CAHk-=wiOhiAJVU71968tAND6rrEJSaYPg7DXK6Y6iiz7_RJACw@mail.gmail.com/
+[2] Documentation/process/volatile-considered-harmful.rst
+[3] https://lwn.net/Articles/233482/
 
 
 Barriers
