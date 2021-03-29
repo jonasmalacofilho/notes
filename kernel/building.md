@@ -1,6 +1,14 @@
 Building
 ========
 
+Data for clangd LSP client
+--------------------------
+
+```
+make compile_commands.json
+```
+
+
 Cross-compiling with GCC
 ------------------------
 
