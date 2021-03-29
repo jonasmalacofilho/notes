@@ -5,7 +5,7 @@ Principal references
 --------------------
 
 [C11]: http://www.open-std.org/jtc1/sc22/wg14/www/standards
-[LKMM]: tools/memory-model/Documentation/README
+[LKMM]: tools/memory-model/Documentation
 [memory barriers]: Documentation/memory-barriers.txt
 
 
@@ -24,6 +24,26 @@ and
 
 So, the program's behavior can be affected by both hardware reordering of
 memory accesses any myriad of compiler optimizations.[1]
+
+The Linux Kernel Memory Model ([LKMM]) expands this definition:
+
+> In technical terms, the compiler is allowed to assume that when the
+> program executes, there will not be any data races.  A "data race"
+> occurs when there are two memory accesses such that:
+>
+> 1.	they access the same location,
+>
+> 2.	at least one of them is a store,
+>
+> 3.	at least one of them is plain,
+>
+> 4.	they occur on different CPUs (or in different threads on the
+> 	same CPU), and
+>
+> 5.	they execute concurrently.
+
+Item 3 is an important distinction; and item 5 determines whether two race
+candidates actually do race.
 
 (It seems that UB itself is not tabu in the kernel; it just places a burden on
 the maintainers to make sure that such code works correctly on all compiler
@@ -140,6 +160,21 @@ Barriers
 
 TODO non smp_ memory barriers
 TODO complete
+
+
+Control dependencies
+--------------------
+[LKMM]/explanation.txt (DEPENDENCY RELATIONS)
+[LKMM]/control-dependencies.txt
+
+A read event and another memory access event are linked by a control dependency
+if the value obtained by the read affects whether the second event is executed
+at all.
+
+However, control dependencies order only later stores.  Some types of CPUs are
+permitted to predict the result of the second load in a load-load control
+dependency.  Thus, load-load control dependencies will not preserve ordering
+unless a read memory barrier is provided.
 
 
 TODO
