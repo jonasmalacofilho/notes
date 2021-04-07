@@ -1,0 +1,64 @@
+NZXT Smart Device (V1)/Grid+ V3 driver
+======================================
+
+Device limitations
+------------------
+
+1.	PWM values cannot be read (but can be changed).
+
+	Hwmon does not expect pwm[1-*] attributes to be WO.[1]  Neither do
+	lm-sensors pwmconfig/fancontrol.
+
+	One solution would be to have the driver track the PWM values that are
+	set, and return those.
+
+2.	Fan presence and control mode detection is asynchronous.
+
+	And there is no precise way to known whether a fan is really missing,
+	in which case control is disabled, or if the device simply has not
+	finished its detection procedure.
+
+	One alternative could be to wait something like 5 seconds (I can refine
+	the value later) before registering with hwmon.  This would allow the
+	device to finish its detection procedure, and is_visible could then
+	hide the unavailable attributes.
+
+	Another way to handle it could be to have all attributes all of the
+	time, and report the fans for which control is disabled through
+	pwm[1-*]_enable.  But this has additional limitations, see 3, 4 and 5
+	bellow.
+
+And if undetected/uncontrollable fans are reported to user-space via
+pwm[1-*]_enable:
+
+3.	Whether PWM is disabled or manually controlled cannot be changed.
+
+	This should be ok (typically RW attributes may be RO),[1] but
+	pwmconfig/fancontrol are cannot handle the case.
+
+	One questionable solution would be to accept the writes, but ignore
+	them.  Not great, but the benefit is that it works with existing
+	versions of lm-sensors.
+
+	Alternatively I could try to prepare patches for lm-sensors.
+
+	(This attribute is only useful for reporting whether control of a
+	particular fan is disabled because it has not been detected [yet]).
+
+4.	PWM changes to undetected fans are accepted, but ignored.
+
+	It could be informative to the user if writes to pwm[1-*] failed with
+	an error.
+
+	But the transparent way to handle it would be to forward the write to
+	the device (even if it will be ignored), and successfully return.
+
+5.	Undetected fans run at 40%.
+
+	pwm[1-*]_enable == 0 is documented to mean "no fan control", but that
+	is immediately followed by "i.e. fan at full speed".
+
+	Is it reasonable for pwm[1-*]_enable to return 0, even though, for this
+	particular device, no fan control means fan at 40% speed?
+
+[1] According to Documentation/hwmon/sysfs-interface.rst.
