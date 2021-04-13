@@ -1,64 +1,88 @@
 NZXT Smart Device (V1)/Grid+ V3 driver
 ======================================
 
-Device limitations
-------------------
+PWM control limitations
+-----------------------
 
-1.	PWM values cannot be read (but can be changed).
+[draft of email sent to Gueter & the hwmon mailing list]
+https://lore.kernel.org/linux-hwmon/20210413124529.jdi6ambxusd47y34@calvin.localdomain/
 
-	Hwmon does not expect pwm[1-*] attributes to be WO.[1]  Neither do
-	lm-sensors pwmconfig/fancontrol.
+Subject: PWM control for NZXT Grid+ V3/Smart Device (V1) fan controllers
 
-	One solution would be to have the driver track the PWM values that are
-	set, and return those.
+Guenter (and others on this list),
 
-2.	Fan presence and control mode detection is asynchronous.
+I am getting ready to submit a driver for NZXT Grid+ V3 and Smart Device
+(V1) fan controllers, but I am having trouble deciding how to expose
+their PWM control due to some device limitations.
 
-	And there is no precise way to known whether a fan is really missing,
-	in which case control is disabled, or if the device simply has not
-	finished its detection procedure.
+Before getting into those, let me first give some very basic context.
 
-	One alternative could be to wait something like 5 seconds (I can refine
-	the value later) before registering with hwmon.  This would allow the
-	device to finish its detection procedure, and is_visible could then
-	hide the unavailable attributes.
+These devices are USB HIDs, and asynchronously send "status" reports
+every 200 ms to communicate speed, current, voltage and control mode for
+one of their channels.  Fans can be controlled by sending a HID output
+report to the device, and both DC and PWM modes are supported; the
+device features a special initialization routine (that must be requested
+during probe) that automatically detects the appropriate control mode
+for each channel.
 
-	Another way to handle it could be to have all attributes all of the
-	time, and report the fans for which control is disabled through
-	pwm[1-*]_enable.  But this has additional limitations, see 3, 4 and 5
-	bellow.
+Back to the limitations...
 
-And if undetected/uncontrollable fans are reported to user-space via
-pwm[1-*]_enable:
+The first one is that PWM values can be set, but not read back.  Hwmon
+does not expect pmw* attributes to be WO,[1] and neither do lm-sensors's
+pwmconfig/ fancontrol.  One solution is to have the driver track the PWM
+values that are set through it and return those, but is this acceptable?
 
-3.	Whether PWM is disabled or manually controlled cannot be changed.
+The other problem starts with PWM control being disabled for channels
+that the device identifies as unconnected.  This is not in itself a
+problem, but the initialization routine (where the detection happens) is
+asynchronous, it takes somewhere around 5 seconds, and we do not have
+any way of directly querying its result.  We only know the control mode
+of each channel (be it DC, PWM or disabled) from the regular status
+reports.
 
-	This should be ok (typically RW attributes may be RO),[1] but
-	pwmconfig/fancontrol are cannot handle the case.
+These limitations make it complicated to hide the pwm* attributes of
+unconnected channels with is_visible().  We would need to create the
+hwmon device only after getting enough post-initialization status
+reports for all channels, and this essentially means sleeping for 6+
+seconds.  We would also need to destroy and recreate the hwmon device
+when going through a suspend-reset_resume cycle, because the device may
+have its state wiped, and thus may need to be reinitialized.[2]
 
-	One questionable solution would be to accept the writes, but ignore
-	them.  Not great, but the benefit is that it works with existing
-	versions of lm-sensors.
+A different approach to handle this, which I have preferred _so far,_ is
+to use pwm*_enable = 0 to report the unconnected channels to user-space,
+while keeping the other pwm* attributes visible.  But this comes with
+other problems.
 
-	Alternatively I could try to prepare patches for lm-sensors.
+First, lm-sensors' pwmconfig expects to be able to write to a
+pwm*_enable attribute if it exists, but the device does not support that
+operation.  The hwmon documentation mentions that RW values may be RO,
+but pwmconfig is out there and in use.  So far I simply return 0 to
+attempts at those writes, silently ignoring them; functional, but
+certainly a hack.
 
-	(This attribute is only useful for reporting whether control of a
-	particular fan is disabled because it has not been detected [yet]).
+Second, if PWM control is disabled for a channel, but the pwm* and
+pwm*_mode are still visible, what should they return when user-space
+attempts to write to them?  The practical answer may simply be to return
+-EOPNOTSUPP, but this makes me wonder if the whole approach (of handling
+these cases with pwm*_enable instead of is_visible()) is not doomed.
 
-4.	PWM changes to undetected fans are accepted, but ignored.
+A final minor problem is that channels detected as unconnected run at
+40% PWM, but the documentation for pwm*_enable == 0 is a bit too
+specific: "no fan speed control (i.e. fan at *full* speed)" (emphasis
+mine).
 
-	It could be informative to the user if writes to pwm[1-*] failed with
-	an error.
+Do you have any suggestions and/or recommendations?
 
-	But the transparent way to handle it would be to forward the write to
-	the device (even if it will be ignored), and successfully return.
+And, if it helps, a pre-RFC (but functional and mostly clean) version of
+the driver can be found at:
 
-5.	Undetected fans run at 40%.
+https://github.com/jonasmalacofilho/linux/blob/p-hwmon-add-nzxt-smartdevice-gridplus3/drivers/hwmon/nzxt-smartdevice.c
 
-	pwm[1-*]_enable == 0 is documented to mean "no fan control", but that
-	is immediately followed by "i.e. fan at full speed".
-
-	Is it reasonable for pwm[1-*]_enable to return 0, even though, for this
-	particular device, no fan control means fan at 40% speed?
+Thanks,
+Jonas
 
 [1] According to Documentation/hwmon/sysfs-interface.rst.
+[2] The device also does not respond to HID Get_Report, so it is not
+    trivial to check whether it really needs to be reinitialized, since
+    the only symptom of that being necessary is the absence of the
+    asynchronous status reports.
