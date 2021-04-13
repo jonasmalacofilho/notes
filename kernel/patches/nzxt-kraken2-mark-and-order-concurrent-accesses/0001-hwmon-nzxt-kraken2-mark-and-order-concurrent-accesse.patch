@@ -1,0 +1,89 @@
+From 5e75d0eed4b1e2edeb0bf893ed0270ae9f6eca03 Mon Sep 17 00:00:00 2001
+From: Jonas Malaco <jonas@protocubo.io>
+Date: Sat, 27 Mar 2021 06:01:05 -0300
+Subject: [PATCH] hwmon: (nzxt-kraken2) mark and order concurrent accesses
+
+To avoid a spinlock, the driver explores concurrent memory accesses
+between _raw_event and _read, having the former updating fields on a
+data structure while the latter could be reading from them.  Because
+these are "plain" accesses, those are data races according to the Linux
+kernel memory model (LKMM).
+
+Data races are undefined behavior in both C11 and LKMM.  In practice,
+the compiler is free to make optimizations assuming there is no data
+race, including load tearing, load fusing and many others,[1] most of
+which could result in corruption of the values reported to user-space.
+
+Prevent undesirable optimizations to those concurrent accesses by
+marking them with READ_ONCE() and WRITE_ONCE().  This also removes the
+data races, according to the LKMM, because both loads and stores to each
+location are now "marked" accesses.
+
+As a special case, use smp_load_acquire() and smp_load_release() when
+loading and storing ->updated, as it is used to track the validity of
+the other values, and thus has to be stored after and loaded before
+them.  These imply READ_ONCE()/WRITE_ONCE() but also ensure the desired
+order of memory accesses.
+
+[1] https://lwn.net/Articles/793253/
+
+Signed-off-by: Jonas Malaco <jonas@protocubo.io>
+---
+ drivers/hwmon/nzxt-kraken2.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/hwmon/nzxt-kraken2.c b/drivers/hwmon/nzxt-kraken2.c
+index 89f7ea4f42d4..f4fbc8771930 100644
+--- a/drivers/hwmon/nzxt-kraken2.c
++++ b/drivers/hwmon/nzxt-kraken2.c
+@@ -46,16 +46,22 @@ static int kraken2_read(struct device *dev, enum hwmon_sensor_types type,
+ 			u32 attr, int channel, long *val)
+ {
+ 	struct kraken2_priv_data *priv = dev_get_drvdata(dev);
++	unsigned long expires;
+ 
+-	if (time_after(jiffies, priv->updated + STATUS_VALIDITY * HZ))
++	/*
++	 * Order load from ->updated before the data it refers to.
++	 */
++	expires = smp_load_acquire(&priv->updated) + STATUS_VALIDITY * HZ;
++
++	if (time_after(jiffies, expires))
+ 		return -ENODATA;
+ 
+ 	switch (type) {
+ 	case hwmon_temp:
+-		*val = priv->temp_input[channel];
++		*val = READ_ONCE(priv->temp_input[channel]);
+ 		break;
+ 	case hwmon_fan:
+-		*val = priv->fan_input[channel];
++		*val = READ_ONCE(priv->fan_input[channel]);
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP; /* unreachable */
+@@ -119,12 +125,15 @@ static int kraken2_raw_event(struct hid_device *hdev,
+ 	 * and that the missing steps are artifacts of how the firmware
+ 	 * processes the raw sensor data.
+ 	 */
+-	priv->temp_input[0] = data[1] * 1000 + data[2] * 100;
++	WRITE_ONCE(priv->temp_input[0], data[1] * 1000 + data[2] * 100);
+ 
+-	priv->fan_input[0] = get_unaligned_be16(data + 3);
+-	priv->fan_input[1] = get_unaligned_be16(data + 5);
++	WRITE_ONCE(priv->fan_input[0], get_unaligned_be16(data + 3));
++	WRITE_ONCE(priv->fan_input[1], get_unaligned_be16(data + 5));
+ 
+-	priv->updated = jiffies;
++	/*
++	 * Order store to ->updated after the data it refers to.
++	 */
++	smp_store_release(&priv->updated, jiffies);
+ 
+ 	return 0;
+ }
+
+base-commit: 644b9af5c605762feffac96bd7ea2499e0197656
+-- 
+2.31.1
+

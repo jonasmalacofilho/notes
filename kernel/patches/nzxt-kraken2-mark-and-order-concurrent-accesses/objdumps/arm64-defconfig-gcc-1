@@ -1,0 +1,251 @@
+
+drivers/hwmon/nzxt-kraken2.ko:     file format elf64-littleaarch64
+
+
+Disassembly of section .text:
+
+0000000000000020 <kraken2_is_visible>:
+  20:	d503245f 	bti	c
+  24:	52802480 	mov	w0, #0x124                 	// #292
+  28:	d503233f 	paciasp
+  2c:	d50323bf 	autiasp
+  30:	d65f03c0 	ret
+
+// x0: *dev
+// w1: type
+// w2: attr
+// w3: channel
+// x4: *val
+0000000000000034 <kraken2_read>:
+  34:	d503245f 	bti	c
+  38:	f9403c02 	ldr	x2, [x0, #120]					// x2: *priv
+  3c:	d503233f 	paciasp
+  40:	91006040 	add	x0, x2, #0x18
+  44:	c8dffc00 	ldar	x0, [x0]					// x0 = priv->updated (load-acquire)
+  48:	90000005 	adrp	x5, 0 <jiffies>
+  4c:	f94000a5 	ldr	x5, [x5]					// x5 = jiffies
+  50:	cb050000 	sub	x0, x0, x5
+  54:	b107d01f 	cmn	x0, #0x1f4					// 500
+  58:	540002a4 	b.mi	ac <kraken2_read+0x78>  // b.first		// if (jiffies > priv->updated + 500) ... return -ENODATA
+  5c:	7100043f 	cmp	w1, #0x1
+  60:	54000160 	b.eq	8c <kraken2_read+0x58>  // b.none		// if (type == hwmon_temp) ...
+  64:	12800bc0 	mov	w0, #0xffffffa1            	// #-95		// ret = -EOPNOTSUPP
+  68:	71001c3f 	cmp	w1, #0x7
+  6c:	540000c1 	b.ne	84 <kraken2_read+0x50>  // b.any		// if (type != hwmon_fan) ... return -EOPNOTSUPP
+hwmon_fan:
+  70:	8b23c443 	add	x3, x2, w3, sxtw #1
+  74:	52800000 	mov	w0, #0x0                   	// #0		// ret = 0
+  78:	79402861 	ldrh	w1, [x3, #20]
+  7c:	92403c21 	and	x1, x1, #0xffff
+  80:	f9000081 	str	x1, [x4]					// *val = priv->fan_input[channel]
+  84:	d50323bf 	autiasp
+  88:	d65f03c0 	ret							// return 0
+hwmon_temp:
+  8c:	93407c63 	sxtw	x3, w3
+  90:	52800000 	mov	w0, #0x0                   	// #0		// ret = 0
+  94:	91001061 	add	x1, x3, #0x4
+  98:	d50323bf 	autiasp
+  9c:	b8617841 	ldr	w1, [x2, x1, lsl #2]
+  a0:	93407c21 	sxtw	x1, w1
+  a4:	f9000081 	str	x1, [x4]					// *val = priv->temp_input[channel]
+  a8:	d65f03c0 	ret							// return 0
+enodata:
+  ac:	12800780 	mov	w0, #0xffffffc3            	// #-61		// ret = -ENODATA
+  b0:	17fffff5 	b	84 <kraken2_read+0x50>				// return ret
+
+00000000000000b4 <kraken2_read_string>:
+  b4:	d503233f 	paciasp
+  b8:	7100043f 	cmp	w1, #0x1
+  bc:	54000160 	b.eq	e8 <kraken2_read_string+0x34>  // b.none
+  c0:	12800bc0 	mov	w0, #0xffffffa1            	// #-95
+  c4:	71001c3f 	cmp	w1, #0x7
+  c8:	540000c1 	b.ne	e0 <kraken2_read_string+0x2c>  // b.any
+  cc:	90000001 	adrp	x1, 300 <kraken2_raw_event+0x70>
+  d0:	91000021 	add	x1, x1, #0x0
+  d4:	52800000 	mov	w0, #0x0                   	// #0
+  d8:	f863d821 	ldr	x1, [x1, w3, sxtw #3]
+  dc:	f9000081 	str	x1, [x4]
+  e0:	d50323bf 	autiasp
+  e4:	d65f03c0 	ret
+  e8:	52800000 	mov	w0, #0x0                   	// #0
+  ec:	90000001 	adrp	x1, 300 <kraken2_raw_event+0x70>
+  f0:	91000021 	add	x1, x1, #0x0
+  f4:	d50323bf 	autiasp
+  f8:	f9000081 	str	x1, [x4]
+  fc:	d65f03c0 	ret
+
+0000000000000100 <kraken2_remove>:
+ 100:	d503233f 	paciasp
+ 104:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+ 108:	910003fd 	mov	x29, sp
+ 10c:	f9000bf3 	str	x19, [sp, #16]
+ 110:	aa0003f3 	mov	x19, x0
+ 114:	f94ca400 	ldr	x0, [x0, #6472]
+ 118:	f9400400 	ldr	x0, [x0, #8]
+ 11c:	94000000 	bl	0 <hwmon_device_unregister>
+ 120:	aa1303e0 	mov	x0, x19
+ 124:	94000000 	bl	0 <hid_hw_close>
+ 128:	aa1303e0 	mov	x0, x19
+ 12c:	94000000 	bl	0 <hid_hw_stop>
+ 130:	f9400bf3 	ldr	x19, [sp, #16]
+ 134:	a8c27bfd 	ldp	x29, x30, [sp], #32
+ 138:	d50323bf 	autiasp
+ 13c:	d65f03c0 	ret
+
+0000000000000140 <kraken2_probe>:
+ 140:	d503233f 	paciasp
+ 144:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+ 148:	d2831a03 	mov	x3, #0x18d0                	// #6352
+ 14c:	910003fd 	mov	x29, sp
+ 150:	a9025bf5 	stp	x21, x22, [sp, #32]
+ 154:	8b030016 	add	x22, x0, x3
+ 158:	5281b802 	mov	w2, #0xdc0                 	// #3520
+ 15c:	d2800401 	mov	x1, #0x20                  	// #32
+ 160:	a90153f3 	stp	x19, x20, [sp, #16]
+ 164:	aa0003f4 	mov	x20, x0
+ 168:	aa1603e0 	mov	x0, x22
+ 16c:	94000000 	bl	0 <devm_kmalloc>
+ 170:	b4000500 	cbz	x0, 210 <kraken2_probe+0xd0>
+ 174:	90000001 	adrp	x1, 0 <jiffies>
+ 178:	aa0003f5 	mov	x21, x0
+ 17c:	f90ca695 	str	x21, [x20, #6472]
+ 180:	aa1403e0 	mov	x0, x20
+ 184:	f9400021 	ldr	x1, [x1]
+ 188:	f90002b4 	str	x20, [x21]
+ 18c:	d107d021 	sub	x1, x1, #0x1f4
+ 190:	f9000ea1 	str	x1, [x21, #24]
+ 194:	94000000 	bl	0 <hid_open_report>
+ 198:	2a0003f3 	mov	w19, w0
+ 19c:	350006a0 	cbnz	w0, 270 <kraken2_probe+0x130>
+ 1a0:	aa1403e0 	mov	x0, x20
+ 1a4:	52800081 	mov	w1, #0x4                   	// #4
+ 1a8:	94000000 	bl	0 <hid_hw_start>
+ 1ac:	2a0003f3 	mov	w19, w0
+ 1b0:	35000540 	cbnz	w0, 258 <kraken2_probe+0x118>
+ 1b4:	aa1403e0 	mov	x0, x20
+ 1b8:	94000000 	bl	0 <hid_hw_open>
+ 1bc:	2a0003f3 	mov	w19, w0
+ 1c0:	35000400 	cbnz	w0, 240 <kraken2_probe+0x100>
+ 1c4:	90000003 	adrp	x3, 300 <kraken2_raw_event+0x70>
+ 1c8:	91000063 	add	x3, x3, #0x0
+ 1cc:	aa1503e2 	mov	x2, x21
+ 1d0:	91004063 	add	x3, x3, #0x10
+ 1d4:	aa1603e0 	mov	x0, x22
+ 1d8:	90000001 	adrp	x1, 300 <kraken2_raw_event+0x70>
+ 1dc:	d2800004 	mov	x4, #0x0                   	// #0
+ 1e0:	91000021 	add	x1, x1, #0x0
+ 1e4:	94000000 	bl	0 <hwmon_device_register_with_info>
+ 1e8:	f90006a0 	str	x0, [x21, #8]
+ 1ec:	aa0003e2 	mov	x2, x0
+ 1f0:	b140041f 	cmn	x0, #0x1, lsl #12
+ 1f4:	54000128 	b.hi	218 <kraken2_probe+0xd8>  // b.pmore
+ 1f8:	2a1303e0 	mov	w0, w19
+ 1fc:	a94153f3 	ldp	x19, x20, [sp, #16]
+ 200:	a9425bf5 	ldp	x21, x22, [sp, #32]
+ 204:	a8c37bfd 	ldp	x29, x30, [sp], #48
+ 208:	d50323bf 	autiasp
+ 20c:	d65f03c0 	ret
+ 210:	12800173 	mov	w19, #0xfffffff4            	// #-12
+ 214:	17fffff9 	b	1f8 <kraken2_probe+0xb8>
+ 218:	90000001 	adrp	x1, 300 <kraken2_raw_event+0x70>
+ 21c:	aa1603e0 	mov	x0, x22
+ 220:	2a0203f3 	mov	w19, w2
+ 224:	91000021 	add	x1, x1, #0x0
+ 228:	94000000 	bl	0 <_dev_err>
+ 22c:	aa1403e0 	mov	x0, x20
+ 230:	94000000 	bl	0 <hid_hw_close>
+ 234:	aa1403e0 	mov	x0, x20
+ 238:	94000000 	bl	0 <hid_hw_stop>
+ 23c:	17ffffef 	b	1f8 <kraken2_probe+0xb8>
+ 240:	aa1603e0 	mov	x0, x22
+ 244:	2a1303e2 	mov	w2, w19
+ 248:	90000001 	adrp	x1, 300 <kraken2_raw_event+0x70>
+ 24c:	91000021 	add	x1, x1, #0x0
+ 250:	94000000 	bl	0 <_dev_err>
+ 254:	17fffff6 	b	22c <kraken2_probe+0xec>
+ 258:	aa1603e0 	mov	x0, x22
+ 25c:	2a1303e2 	mov	w2, w19
+ 260:	90000001 	adrp	x1, 300 <kraken2_raw_event+0x70>
+ 264:	91000021 	add	x1, x1, #0x0
+ 268:	94000000 	bl	0 <_dev_err>
+ 26c:	17fffff2 	b	234 <kraken2_probe+0xf4>
+ 270:	aa1603e0 	mov	x0, x22
+ 274:	2a1303e2 	mov	w2, w19
+ 278:	90000001 	adrp	x1, 300 <kraken2_raw_event+0x70>
+ 27c:	91000021 	add	x1, x1, #0x0
+ 280:	94000000 	bl	0 <_dev_err>
+ 284:	17ffffdd 	b	1f8 <kraken2_probe+0xb8>
+ 288:	d503201f 	nop
+ 28c:	d503201f 	nop
+
+0000000000000290 <kraken2_raw_event>:
+ 290:	d503233f 	paciasp
+ 294:	7100187f 	cmp	w3, #0x6
+ 298:	5400008d 	b.le	2a8 <kraken2_raw_event+0x18>
+ 29c:	b9402021 	ldr	w1, [x1, #32]
+ 2a0:	7100103f 	cmp	w1, #0x4
+ 2a4:	54000080 	b.eq	2b4 <kraken2_raw_event+0x24>  // b.none
+ 2a8:	52800000 	mov	w0, #0x0                   	// #0
+ 2ac:	d50323bf 	autiasp
+ 2b0:	d65f03c0 	ret
+ 2b4:	39400843 	ldrb	w3, [x2, #2]
+ 2b8:	52800c86 	mov	w6, #0x64                  	// #100
+ 2bc:	39400441 	ldrb	w1, [x2, #1]
+ 2c0:	52807d05 	mov	w5, #0x3e8                 	// #1000
+ 2c4:	f94ca400 	ldr	x0, [x0, #6472]
+ 2c8:	90000004 	adrp	x4, 0 <jiffies>
+ 2cc:	1b067c63 	mul	w3, w3, w6
+ 2d0:	1b050c21 	madd	w1, w1, w5, w3
+ 2d4:	91006000 	add	x0, x0, #0x18
+ 2d8:	b81f8001 	stur	w1, [x0, #-8]
+ 2dc:	78403041 	ldurh	w1, [x2, #3]
+ 2e0:	5ac00421 	rev16	w1, w1
+ 2e4:	781fc001 	sturh	w1, [x0, #-4]
+ 2e8:	78405041 	ldurh	w1, [x2, #5]
+ 2ec:	5ac00421 	rev16	w1, w1
+ 2f0:	781fe001 	sturh	w1, [x0, #-2]
+ 2f4:	f9400081 	ldr	x1, [x4]
+ 2f8:	c89ffc01 	stlr	x1, [x0]
+ 2fc:	52800000 	mov	w0, #0x0                   	// #0
+ 300:	d50323bf 	autiasp
+ 304:	d65f03c0 	ret
+
+Disassembly of section .init.text:
+
+0000000000000000 <init_module>:
+   0:	d503233f 	paciasp
+   4:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+   8:	90000002 	adrp	x2, 300 <kraken2_raw_event+0x70>
+   c:	910003fd 	mov	x29, sp
+  10:	91000042 	add	x2, x2, #0x0
+  14:	90000001 	adrp	x1, 0 <init_module>
+  18:	90000000 	adrp	x0, 0 <init_module>
+  1c:	91000021 	add	x1, x1, #0x0
+  20:	91000000 	add	x0, x0, #0x0
+  24:	94000000 	bl	0 <__hid_register_driver>
+  28:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  2c:	d50323bf 	autiasp
+  30:	d65f03c0 	ret
+
+Disassembly of section .exit.text:
+
+0000000000000000 <cleanup_module>:
+   0:	d503233f 	paciasp
+   4:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+   8:	90000000 	adrp	x0, 0 <cleanup_module>
+   c:	910003fd 	mov	x29, sp
+  10:	91000000 	add	x0, x0, #0x0
+  14:	94000000 	bl	0 <hid_unregister_driver>
+  18:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  1c:	d50323bf 	autiasp
+  20:	d65f03c0 	ret
+
+Disassembly of section .plt:
+
+0000000000000000 <.plt>:
+	...
+
+Disassembly of section .text.ftrace_trampoline:
+
+0000000000000000 <.text.ftrace_trampoline>:
+	...

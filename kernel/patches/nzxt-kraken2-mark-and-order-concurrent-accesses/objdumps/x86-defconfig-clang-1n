@@ -1,0 +1,218 @@
+
+drivers/hwmon/nzxt-kraken2.ko:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+<kraken2_probe>:
+	push   ebp
+	mov    ebp,esp
+	push   ebx
+	push   edi
+	push   esi
+	push   eax
+	mov    esi,eax
+	lea    ebx,[eax+0xc7c]
+	mov    eax,ebx
+	mov    edx,0x14
+	mov    ecx,0xdc0
+	call   <kraken2_probe+0x1c>
+	test   eax,eax
+	je     <kraken2_probe+0x97>
+	mov    edi,eax
+	mov    DWORD PTR [ebp-0x10],ebx
+	mov    DWORD PTR [eax],esi
+	mov    DWORD PTR [esi+0xcbc],eax
+	mov    eax,0xfffff830
+	add    eax,DWORD PTR ds:0x0
+	mov    DWORD PTR [edi+0x10],eax
+	mov    eax,esi
+	call   <kraken2_probe+0x42>
+	test   eax,eax
+	jne    <kraken2_probe+0x9e>
+	mov    eax,esi
+	mov    edx,0x4
+	call   <kraken2_probe+0x52>
+	test   eax,eax
+	jne    <kraken2_probe+0xb3>
+	mov    eax,esi
+	call   <kraken2_probe+0x5d>
+	test   eax,eax
+	jne    <kraken2_probe+0xc8>
+	mov    eax,DWORD PTR [ebp-0x10]
+	mov    edx,0xb1
+	mov    ecx,edi
+	push   0x0
+	push   0x20
+	call   <kraken2_probe+0x77>
+	add    esp,0x8
+	mov    DWORD PTR [edi+0x4],eax
+	xor    ebx,ebx
+	cmp    eax,0xfffff001
+	jb     <kraken2_probe+0xe9>
+	push   eax
+	push   0xb9
+	push   DWORD PTR [ebp-0x10]
+	mov    ebx,eax
+	jmp    <kraken2_probe+0xd3>
+	mov    ebx,0xfffffff4
+	jmp    <kraken2_probe+0xe9>
+	mov    ebx,eax
+	push   eax
+	push   0x5e
+	push   DWORD PTR [ebp-0x10]
+	call   <kraken2_probe+0xaa>
+	add    esp,0xc
+	jmp    <kraken2_probe+0xe9>
+	mov    ebx,eax
+	push   eax
+	push   0x78
+	push   DWORD PTR [ebp-0x10]
+	call   <kraken2_probe+0xbf>
+	add    esp,0xc
+	jmp    <kraken2_probe+0xe2>
+	mov    ebx,eax
+	push   eax
+	push   0x95
+	push   DWORD PTR [ebp-0x10]
+	call   <kraken2_probe+0xd4>
+	add    esp,0xc
+	mov    eax,esi
+	call   <kraken2_probe+0xde>
+	mov    eax,esi
+	call   <kraken2_probe+0xe5>
+	mov    eax,ebx
+	add    esp,0x4
+	pop    esi
+	pop    edi
+	pop    ebx
+	pop    ebp
+	ret    
+	lea    esi,[esi+eiz*1+0x0]
+	lea    esi,[esi+0x0]
+
+<kraken2_remove>:
+	push   ebp
+	mov    ebp,esp
+	push   esi
+	mov    esi,eax
+	mov    eax,DWORD PTR [eax+0xcbc]
+	mov    eax,DWORD PTR [eax+0x4]
+	call   <kraken2_remove+0x10>
+	mov    eax,esi
+	call   <kraken2_remove+0x17>
+	mov    eax,esi
+	call   <kraken2_remove+0x1e>
+	pop    esi
+	pop    ebp
+	ret    
+	lea    esi,[esi+eiz*1+0x0]
+	lea    esi,[esi+eiz*1+0x0]
+
+<kraken2_raw_event>:
+	push   ebp
+	mov    ebp,esp
+	push   esi
+	cmp    DWORD PTR [ebp+0x8],0x7
+	jl     <kraken2_raw_event+0x4d>
+	cmp    DWORD PTR [edx+0x10],0x4
+	jne    <kraken2_raw_event+0x4d>
+	mov    eax,DWORD PTR [eax+0xcbc]
+	movzx  edx,BYTE PTR [ecx+0x1]
+	imul   edx,edx,0x3e8
+	movzx  esi,BYTE PTR [ecx+0x2]
+	imul   esi,esi,0x64
+	add    esi,edx
+	mov    DWORD PTR [eax+0x8],esi
+	movzx  edx,WORD PTR [ecx+0x3]
+	rol    dx,0x8
+	mov    WORD PTR [eax+0xc],dx
+	movzx  ecx,WORD PTR [ecx+0x5]
+	rol    cx,0x8
+	mov    WORD PTR [eax+0xe],cx
+	mov    ecx,DWORD PTR ds:0x0
+	mov    DWORD PTR [eax+0x10],ecx
+	xor    eax,eax
+	pop    esi
+	pop    ebp
+	ret    
+	lea    esi,[esi+eiz*1+0x0]
+	lea    esi,[esi+eiz*1+0x0]
+
+<kraken2_is_visible>:
+	push   ebp
+	mov    ebp,esp
+	mov    ax,0x124
+	pop    ebp
+	ret    
+	lea    esi,[esi+eiz*1+0x0]
+
+<kraken2_read>:
+	push   ebp
+	mov    ebp,esp
+	push   esi
+	mov    ecx,DWORD PTR [eax+0x40]
+	mov    eax,DWORD PTR [ecx+0x10]
+	sub    eax,DWORD PTR ds:0x0
+	add    eax,0x7d0
+	js     <kraken2_read+0x2f>
+	mov    esi,DWORD PTR [ebp+0x8]
+	cmp    edx,0x7
+	je     <kraken2_read+0x36>
+	mov    eax,0xffffffa1
+	cmp    edx,0x1
+	jne    <kraken2_read+0x42>
+	mov    eax,DWORD PTR [ecx+esi*4+0x8]
+	jmp    <kraken2_read+0x3b>
+	mov    eax,0xffffffc3
+	jmp    <kraken2_read+0x42>
+	movzx  eax,WORD PTR [ecx+esi*2+0xc]
+	mov    ecx,DWORD PTR [ebp+0xc]
+	mov    DWORD PTR [ecx],eax
+	xor    eax,eax
+	pop    esi
+	pop    ebp
+	ret    
+	lea    esi,[esi+eiz*1+0x0]
+	lea    esi,[esi+eiz*1+0x0]
+
+<kraken2_read_string>:
+	push   ebp
+	mov    ebp,esp
+	mov    ecx,DWORD PTR [ebp+0x8]
+	cmp    edx,0x7
+	je     <kraken2_read_string+0x1e>
+	mov    eax,0xffffffa1
+	cmp    edx,0x1
+	jne    <kraken2_read_string+0x2e>
+	lea    eax,[ecx*4+0x38]
+	jmp    <kraken2_read_string+0x25>
+	lea    eax,[ecx*4+0x3c]
+	mov    ecx,DWORD PTR [ebp+0xc]
+	mov    eax,DWORD PTR [eax]
+	mov    DWORD PTR [ecx],eax
+	xor    eax,eax
+	pop    ebp
+	ret    
+
+Disassembly of section .init.text:
+
+<init_module>:
+	push   ebp
+	mov    ebp,esp
+	mov    eax,0x0
+	mov    edx,0x0
+	mov    ecx,0x44
+	call   <init_module+0x13>
+	pop    ebp
+	ret    
+
+Disassembly of section .exit.text:
+
+<cleanup_module>:
+	push   ebp
+	mov    ebp,esp
+	mov    eax,0x0
+	call   <cleanup_module+0x9>
+	pop    ebp
+	ret    

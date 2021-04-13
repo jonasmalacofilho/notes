@@ -1,0 +1,187 @@
+
+drivers/hwmon/nzxt-kraken2.ko:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+<kraken2_probe>:
+	push   r15
+	push   r14
+	push   r13
+	push   r12
+	push   rbx
+	mov    r15,rdi
+	lea    r14,[rdi+0x18d0]
+	mov    esi,0x20
+	mov    rdi,r14
+	mov    edx,0xdc0
+	call   <kraken2_probe+0x25>
+	test   rax,rax
+	je     <kraken2_probe+0xbd>
+	mov    rbx,rax
+	mov    QWORD PTR [rax],r15
+	mov    QWORD PTR [r15+0x1948],rax
+	mov    rax,0xfffffffffffff830
+	add    rax,QWORD PTR [rip+0x0]        # <kraken2_probe+0x49>
+	mov    QWORD PTR [rbx+0x18],rax
+	mov    rdi,r15
+	call   <kraken2_probe+0x55>
+	test   eax,eax
+	jne    <kraken2_probe+0xc5>
+	mov    rdi,r15
+	mov    esi,0x4
+	call   <kraken2_probe+0x66>
+	test   eax,eax
+	jne    <kraken2_probe+0xdd>
+	mov    rdi,r15
+	call   <kraken2_probe+0x72>
+	test   eax,eax
+	jne    <kraken2_probe+0xf5>
+	xor    r12d,r12d
+	mov    rdi,r14
+	mov    rsi,0x0
+	mov    rdx,rbx
+	mov    rcx,0x0
+	xor    r8d,r8d
+	call   <kraken2_probe+0x95>
+	mov    QWORD PTR [rbx+0x8],rax
+	cmp    rax,0xfffffffffffff001
+	jb     <kraken2_probe+0x11b>
+	mov    r13,rax
+	mov    rdi,r14
+	mov    rsi,0x0
+	mov    edx,r13d
+	xor    eax,eax
+	call   <kraken2_probe+0xb8>
+	mov    r12d,r13d
+	jmp    <kraken2_probe+0x10b>
+	mov    r12d,0xfffffff4
+	jmp    <kraken2_probe+0x11b>
+	mov    r12d,eax
+	mov    rdi,r14
+	mov    rsi,0x0
+	mov    edx,eax
+	xor    eax,eax
+	call   <kraken2_probe+0xdb>
+	jmp    <kraken2_probe+0x11b>
+	mov    r12d,eax
+	mov    rdi,r14
+	mov    rsi,0x0
+	mov    edx,eax
+	xor    eax,eax
+	call   <kraken2_probe+0xf3>
+	jmp    <kraken2_probe+0x113>
+	mov    r12d,eax
+	mov    rdi,r14
+	mov    rsi,0x0
+	mov    edx,eax
+	xor    eax,eax
+	call   <kraken2_probe+0x10b>
+	mov    rdi,r15
+	call   <kraken2_probe+0x113>
+	mov    rdi,r15
+	call   <kraken2_probe+0x11b>
+	mov    eax,r12d
+	pop    rbx
+	pop    r12
+	pop    r13
+	pop    r14
+	pop    r15
+	ret    
+	nop    DWORD PTR [rax+rax*1+0x0]
+
+<kraken2_remove>:
+	push   rbx
+	mov    rbx,rdi
+	mov    rax,QWORD PTR [rdi+0x1948]
+	mov    rdi,QWORD PTR [rax+0x8]
+	call   <kraken2_remove+0x14>
+	mov    rdi,rbx
+	call   <kraken2_remove+0x1c>
+	mov    rdi,rbx
+	pop    rbx
+	jmp    <kraken2_remove+0x25>
+	data16 cs nop WORD PTR [rax+rax*1+0x0]
+
+<kraken2_raw_event>:
+	cmp    ecx,0x7
+	jl     <kraken2_raw_event+0x4b>
+	cmp    DWORD PTR [rsi+0x20],0x4
+	jne    <kraken2_raw_event+0x4b>
+	mov    rax,QWORD PTR [rdi+0x1948]
+	movzx  ecx,BYTE PTR [rdx+0x1]
+	imul   ecx,ecx,0x3e8
+	movzx  esi,BYTE PTR [rdx+0x2]
+	imul   esi,esi,0x64
+	add    esi,ecx
+	mov    DWORD PTR [rax+0x10],esi
+	movzx  ecx,WORD PTR [rdx+0x3]
+	rol    cx,0x8
+	mov    WORD PTR [rax+0x14],cx
+	movzx  ecx,WORD PTR [rdx+0x5]
+	rol    cx,0x8
+	mov    WORD PTR [rax+0x16],cx
+	mov    rcx,QWORD PTR [rip+0x0]        # <kraken2_raw_event+0x47>
+	mov    QWORD PTR [rax+0x18],rcx
+	xor    eax,eax
+	ret    
+	xchg   ax,ax
+
+<kraken2_is_visible>:
+	mov    ax,0x124
+	ret    
+	data16 cs nop WORD PTR [rax+rax*1+0x0]
+
+<kraken2_read>:
+	mov    rdx,QWORD PTR [rdi+0x78]
+	mov    rax,QWORD PTR [rdx+0x18]
+	sub    rax,QWORD PTR [rip+0x0]        # <kraken2_read+0xf>
+	add    rax,0x7d0
+	js     <kraken2_read+0x30>
+	cmp    esi,0x7
+	je     <kraken2_read+0x36>
+	mov    eax,0xffffffa1
+	cmp    esi,0x1
+	jne    <kraken2_read+0x43>
+	movsxd rax,ecx
+	movsxd rax,DWORD PTR [rdx+rax*4+0x10]
+	jmp    <kraken2_read+0x3e>
+	mov    eax,0xffffffc3
+	ret    
+	movsxd rax,ecx
+	movzx  eax,WORD PTR [rdx+rax*2+0x14]
+	mov    QWORD PTR [r8],rax
+	xor    eax,eax
+	ret    
+	data16 cs nop WORD PTR [rax+rax*1+0x0]
+	nop
+
+<kraken2_read_string>:
+	cmp    esi,0x7
+	je     <kraken2_read_string+0x1c>
+	mov    eax,0xffffffa1
+	cmp    esi,0x1
+	jne    <kraken2_read_string+0x2f>
+	movsxd rax,ecx
+	lea    rax,[rax*8+0x0]
+	jmp    <kraken2_read_string+0x27>
+	movsxd rax,ecx
+	lea    rax,[rax*8+0x0]
+	mov    rax,QWORD PTR [rax]
+	mov    QWORD PTR [r8],rax
+	xor    eax,eax
+	ret    
+
+Disassembly of section .init.text:
+
+<init_module>:
+	mov    rdi,0x0
+	mov    rsi,0x0
+	mov    rdx,0x0
+	jmp    <__UNIQUE_ID_author221+0xe>
+
+Disassembly of section .exit.text:
+
+<cleanup_module>:
+	mov    rdi,0x0
+	jmp    <__UNIQUE_ID_author221>

@@ -1,0 +1,46 @@
+drivers/hwmon/lm87.c:190:	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
+	no concurrent access
+
+sound/pci/cs4281.c:1506:		} while (time_after_eq(end_time, jiffies));
+	no concurrent access
+
+include/linux/ktime.h:111:static inline bool ktime_after(const ktime_t cmp1, const ktime_t cmp2)
+	false detection
+
+drivers/net/ethernet/mellanox/mlx5/core/cq.c:62:		if (time_after(jiffies, end))
+	end is local
+
+drivers/gpu/drm/scheduler/sched_main.c:274:			&& time_after(sched_timeout, now))
+	unclear
+
+fs/cifs/transport.c:142:	   time_after(now, midEntry->when_alloc + (slow_rsp_threshold * HZ)) &&
+	no concurrent stores to midEntry->when_alloc; slow_rsp_threshold is module param
+
+sound/pci/ac97/ac97_codec.c:2567:		} while (time_after_eq(end_time, jiffies));
+	no concurrent access
+
+drivers/i2c/busses/i2c-omap.c:507:		if (time_after(jiffies, timeout))
+	no concurrent access
+
+net/bridge/br_multicast.c:1802:	    time_after(pg->timer.expires, now + br_multicast_lmqt(br))))
+	required to ensure serialization by previous call to timer_pending
+
+kernel/sched/fair.c:10701:	if (time_after_eq(jiffies, rq->next_balance))
+	unclear
+
+drivers/scsi/aacraid/src.c:735:		if (time_after(jiffies, start+HZ*SOFT_RESET_TIME)) {
+	no concurrent access
+
+drivers/net/wireless/ti/wlcore/tx.c:1153:	while (!time_after(jiffies, timeout)) {
+	no concurrent access
+
+drivers/parport/ieee1284_ops.c:686:		if (time_after_eq (jiffies, expire)) break;
+	no (apparent) concurrent access
+
+drivers/net/ethernet/8390/pcnet_cs.c:1075:    if (info->pna_phy && time_after(jiffies, info->mii_reset + 6*HZ)) {
+	no (apparent) concurrent access
+
+drivers/block/umem.c:684:		  time_after_eq(jiffies, card->battery[battery].last_change +
+drivers/scsi/mvumi.c:616:		if (time_after(jiffies, before + FW_MAX_DELAY * HZ)) {
+drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c:71:		   time_after(jiffies, entry->first_frag_time + 2 * HZ)) {
+net/mac80211/rx.c:1184:			   !time_after(jiffies, tid_agg_rx->reorder_time[j] +

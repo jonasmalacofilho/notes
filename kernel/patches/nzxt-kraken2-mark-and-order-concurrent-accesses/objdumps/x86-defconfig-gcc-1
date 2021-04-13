@@ -1,0 +1,235 @@
+
+drivers/hwmon/nzxt-kraken2.ko:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+00000020 <kraken2_is_visible>:
+  20:	b8 24 01 00 00       	mov    eax,0x124
+  25:	c3                   	ret    
+  26:	8d b4 26 00 00 00 00 	lea    esi,[esi+eiz*1+0x0]
+  2d:	8d 76 00             	lea    esi,[esi+0x0]
+
+00000030 <kraken2_read>:
+  30:	55                   	push   ebp
+  31:	89 e5                	mov    ebp,esp
+  33:	53                   	push   ebx
+  34:	8b 48 40             	mov    ecx,DWORD PTR [eax+0x40]
+  37:	8b 41 10             	mov    eax,DWORD PTR [ecx+0x10]
+  3a:	8b 1d 00 00 00 00    	mov    ebx,DWORD PTR ds:0x0
+  40:	29 d8                	sub    eax,ebx
+  42:	05 d0 07 00 00       	add    eax,0x7d0
+  47:	78 3a                	js     83 <kraken2_read+0x53>
+  49:	83 fa 01             	cmp    edx,0x1
+  4c:	74 22                	je     70 <kraken2_read+0x40>
+  4e:	b8 a1 ff ff ff       	mov    eax,0xffffffa1
+  53:	83 fa 07             	cmp    edx,0x7
+  56:	75 0f                	jne    67 <kraken2_read+0x37>
+  58:	8b 45 08             	mov    eax,DWORD PTR [ebp+0x8]
+  5b:	0f b7 44 41 0c       	movzx  eax,WORD PTR [ecx+eax*2+0xc]
+  60:	8b 4d 0c             	mov    ecx,DWORD PTR [ebp+0xc]
+  63:	89 01                	mov    DWORD PTR [ecx],eax
+  65:	31 c0                	xor    eax,eax
+  67:	8b 5d fc             	mov    ebx,DWORD PTR [ebp-0x4]
+  6a:	c9                   	leave  
+  6b:	c3                   	ret    
+  6c:	8d 74 26 00          	lea    esi,[esi+eiz*1+0x0]
+  70:	8b 45 08             	mov    eax,DWORD PTR [ebp+0x8]
+  73:	8b 5d 0c             	mov    ebx,DWORD PTR [ebp+0xc]
+  76:	8b 44 81 08          	mov    eax,DWORD PTR [ecx+eax*4+0x8]
+  7a:	89 03                	mov    DWORD PTR [ebx],eax
+  7c:	31 c0                	xor    eax,eax
+  7e:	8b 5d fc             	mov    ebx,DWORD PTR [ebp-0x4]
+  81:	c9                   	leave  
+  82:	c3                   	ret    
+  83:	b8 c3 ff ff ff       	mov    eax,0xffffffc3
+  88:	eb dd                	jmp    67 <kraken2_read+0x37>
+  8a:	8d b6 00 00 00 00    	lea    esi,[esi+0x0]
+
+00000090 <kraken2_read_string>:
+  90:	55                   	push   ebp
+  91:	89 e5                	mov    ebp,esp
+  93:	83 fa 01             	cmp    edx,0x1
+  96:	74 20                	je     b8 <kraken2_read_string+0x28>
+  98:	b8 a1 ff ff ff       	mov    eax,0xffffffa1
+  9d:	83 fa 07             	cmp    edx,0x7
+  a0:	75 11                	jne    b3 <kraken2_read_string+0x23>
+  a2:	8b 45 08             	mov    eax,DWORD PTR [ebp+0x8]
+  a5:	8b 4d 0c             	mov    ecx,DWORD PTR [ebp+0xc]
+  a8:	8b 04 85 f8 00 00 00 	mov    eax,DWORD PTR [eax*4+0xf8]
+  af:	89 01                	mov    DWORD PTR [ecx],eax
+  b1:	31 c0                	xor    eax,eax
+  b3:	5d                   	pop    ebp
+  b4:	c3                   	ret    
+  b5:	8d 76 00             	lea    esi,[esi+0x0]
+  b8:	8b 45 0c             	mov    eax,DWORD PTR [ebp+0xc]
+  bb:	c7 00 00 00 00 00    	mov    DWORD PTR [eax],0x0
+  c1:	31 c0                	xor    eax,eax
+  c3:	5d                   	pop    ebp
+  c4:	c3                   	ret    
+  c5:	8d b4 26 00 00 00 00 	lea    esi,[esi+eiz*1+0x0]
+  cc:	8d 74 26 00          	lea    esi,[esi+eiz*1+0x0]
+
+000000d0 <kraken2_remove>:
+  d0:	55                   	push   ebp
+  d1:	89 e5                	mov    ebp,esp
+  d3:	53                   	push   ebx
+  d4:	89 c3                	mov    ebx,eax
+  d6:	8b 80 bc 0c 00 00    	mov    eax,DWORD PTR [eax+0xcbc]
+  dc:	8b 40 04             	mov    eax,DWORD PTR [eax+0x4]
+  df:	e8 fc ff ff ff       	call   e0 <kraken2_remove+0x10>
+  e4:	89 d8                	mov    eax,ebx
+  e6:	e8 fc ff ff ff       	call   e7 <kraken2_remove+0x17>
+  eb:	89 d8                	mov    eax,ebx
+  ed:	e8 fc ff ff ff       	call   ee <kraken2_remove+0x1e>
+  f2:	8b 5d fc             	mov    ebx,DWORD PTR [ebp-0x4]
+  f5:	c9                   	leave  
+  f6:	c3                   	ret    
+  f7:	8d b4 26 00 00 00 00 	lea    esi,[esi+eiz*1+0x0]
+  fe:	66 90                	xchg   ax,ax
+
+00000100 <kraken2_probe>:
+ 100:	55                   	push   ebp
+ 101:	b9 c0 0d 00 00       	mov    ecx,0xdc0
+ 106:	ba 14 00 00 00       	mov    edx,0x14
+ 10b:	89 e5                	mov    ebp,esp
+ 10d:	57                   	push   edi
+ 10e:	56                   	push   esi
+ 10f:	89 c6                	mov    esi,eax
+ 111:	05 7c 0c 00 00       	add    eax,0xc7c
+ 116:	53                   	push   ebx
+ 117:	83 ec 04             	sub    esp,0x4
+ 11a:	89 45 f0             	mov    DWORD PTR [ebp-0x10],eax
+ 11d:	e8 fc ff ff ff       	call   11e <kraken2_probe+0x1e>
+ 122:	85 c0                	test   eax,eax
+ 124:	74 7f                	je     1a5 <kraken2_probe+0xa5>
+ 126:	89 30                	mov    DWORD PTR [eax],esi
+ 128:	89 c7                	mov    edi,eax
+ 12a:	89 86 bc 0c 00 00    	mov    DWORD PTR [esi+0xcbc],eax
+ 130:	a1 00 00 00 00       	mov    eax,ds:0x0
+ 135:	2d d0 07 00 00       	sub    eax,0x7d0
+ 13a:	89 47 10             	mov    DWORD PTR [edi+0x10],eax
+ 13d:	89 f0                	mov    eax,esi
+ 13f:	e8 fc ff ff ff       	call   140 <kraken2_probe+0x40>
+ 144:	89 c3                	mov    ebx,eax
+ 146:	85 c0                	test   eax,eax
+ 148:	0f 85 3b 02 00 00    	jne    389 <kraken2_fan_label+0x51>
+ 14e:	ba 04 00 00 00       	mov    edx,0x4
+ 153:	89 f0                	mov    eax,esi
+ 155:	e8 fc ff ff ff       	call   156 <kraken2_probe+0x56>
+ 15a:	89 c3                	mov    ebx,eax
+ 15c:	85 c0                	test   eax,eax
+ 15e:	0f 85 28 02 00 00    	jne    38c <kraken2_fan_label+0x54>
+ 164:	89 f0                	mov    eax,esi
+ 166:	e8 fc ff ff ff       	call   167 <kraken2_probe+0x67>
+ 16b:	89 c3                	mov    ebx,eax
+ 16d:	85 c0                	test   eax,eax
+ 16f:	0f 85 15 02 00 00    	jne    38a <kraken2_fan_label+0x52>
+ 175:	6a 00                	push   0x0
+ 177:	8b 45 f0             	mov    eax,DWORD PTR [ebp-0x10]
+ 17a:	89 f9                	mov    ecx,edi
+ 17c:	ba 5b 00 00 00       	mov    edx,0x5b
+ 181:	68 e0 00 00 00       	push   0xe0
+ 186:	e8 fc ff ff ff       	call   187 <kraken2_probe+0x87>
+ 18b:	89 47 04             	mov    DWORD PTR [edi+0x4],eax
+ 18e:	5a                   	pop    edx
+ 18f:	59                   	pop    ecx
+ 190:	3d 00 f0 ff ff       	cmp    eax,0xfffff000
+ 195:	0f 87 ef 01 00 00    	ja     38a <kraken2_fan_label+0x52>
+ 19b:	8d 65 f4             	lea    esp,[ebp-0xc]
+ 19e:	89 d8                	mov    eax,ebx
+ 1a0:	5b                   	pop    ebx
+ 1a1:	5e                   	pop    esi
+ 1a2:	5f                   	pop    edi
+ 1a3:	5d                   	pop    ebp
+ 1a4:	c3                   	ret    
+ 1a5:	bb f4 ff ff ff       	mov    ebx,0xfffffff4
+ 1aa:	eb ef                	jmp    19b <kraken2_probe+0x9b>
+ 1ac:	8d 74 26 00          	lea    esi,[esi+eiz*1+0x0]
+
+000001b0 <kraken2_raw_event>:
+ 1b0:	55                   	push   ebp
+ 1b1:	89 e5                	mov    ebp,esp
+ 1b3:	53                   	push   ebx
+ 1b4:	83 7d 08 06          	cmp    DWORD PTR [ebp+0x8],0x6
+ 1b8:	7e 06                	jle    1c0 <kraken2_raw_event+0x10>
+ 1ba:	83 7a 10 04          	cmp    DWORD PTR [edx+0x10],0x4
+ 1be:	74 10                	je     1d0 <kraken2_raw_event+0x20>
+ 1c0:	8b 5d fc             	mov    ebx,DWORD PTR [ebp-0x4]
+ 1c3:	31 c0                	xor    eax,eax
+ 1c5:	c9                   	leave  
+ 1c6:	c3                   	ret    
+ 1c7:	8d b4 26 00 00 00 00 	lea    esi,[esi+eiz*1+0x0]
+ 1ce:	66 90                	xchg   ax,ax
+ 1d0:	8b 90 bc 0c 00 00    	mov    edx,DWORD PTR [eax+0xcbc]
+ 1d6:	0f b6 59 02          	movzx  ebx,BYTE PTR [ecx+0x2]
+ 1da:	0f b6 41 01          	movzx  eax,BYTE PTR [ecx+0x1]
+ 1de:	6b db 64             	imul   ebx,ebx,0x64
+ 1e1:	69 c0 e8 03 00 00    	imul   eax,eax,0x3e8
+ 1e7:	01 d8                	add    eax,ebx
+ 1e9:	89 42 08             	mov    DWORD PTR [edx+0x8],eax
+ 1ec:	0f b7 41 03          	movzx  eax,WORD PTR [ecx+0x3]
+ 1f0:	66 c1 c0 08          	rol    ax,0x8
+ 1f4:	66 89 42 0c          	mov    WORD PTR [edx+0xc],ax
+ 1f8:	0f b7 41 05          	movzx  eax,WORD PTR [ecx+0x5]
+ 1fc:	66 c1 c0 08          	rol    ax,0x8
+ 200:	66 89 42 0e          	mov    WORD PTR [edx+0xe],ax
+ 204:	a1 00 00 00 00       	mov    eax,ds:0x0
+ 209:	89 42 10             	mov    DWORD PTR [edx+0x10],eax
+ 20c:	31 c0                	xor    eax,eax
+ 20e:	8b 5d fc             	mov    ebx,DWORD PTR [ebp-0x4]
+ 211:	c9                   	leave  
+ 212:	c3                   	ret    
+
+00000213 <kraken2_probe.cold>:
+ 213:	50                   	push   eax
+ 214:	89 c3                	mov    ebx,eax
+ 216:	68 88 00 00 00       	push   0x88
+ 21b:	ff 75 f0             	push   DWORD PTR [ebp-0x10]
+ 21e:	e8 fc ff ff ff       	call   21f <kraken2_probe.cold+0xc>
+ 223:	83 c4 0c             	add    esp,0xc
+ 226:	89 f0                	mov    eax,esi
+ 228:	e8 fc ff ff ff       	call   229 <kraken2_probe.cold+0x16>
+ 22d:	89 f0                	mov    eax,esi
+ 22f:	e8 fc ff ff ff       	call   230 <kraken2_probe.cold+0x1d>
+ 234:	e9 77 01 00 00       	jmp    3b0 <kraken2_fan_label+0x78>
+ 239:	50                   	push   eax
+ 23a:	68 3f 00 00 00       	push   0x3f
+ 23f:	ff 75 f0             	push   DWORD PTR [ebp-0x10]
+ 242:	e8 fc ff ff ff       	call   243 <kraken2_probe.cold+0x30>
+ 247:	83 c4 0c             	add    esp,0xc
+ 24a:	eb da                	jmp    226 <kraken2_probe.cold+0x13>
+ 24c:	50                   	push   eax
+ 24d:	68 22 00 00 00       	push   0x22
+ 252:	ff 75 f0             	push   DWORD PTR [ebp-0x10]
+ 255:	e8 fc ff ff ff       	call   256 <kraken2_probe.cold+0x43>
+ 25a:	83 c4 0c             	add    esp,0xc
+ 25d:	eb ce                	jmp    22d <kraken2_probe.cold+0x1a>
+ 25f:	50                   	push   eax
+ 260:	68 08 00 00 00       	push   0x8
+ 265:	ff 75 f0             	push   DWORD PTR [ebp-0x10]
+ 268:	e8 fc ff ff ff       	call   269 <kraken2_probe.cold+0x56>
+ 26d:	83 c4 0c             	add    esp,0xc
+ 270:	e9 77 01 00 00       	jmp    3ec <kraken2_fan_label+0xb4>
+
+Disassembly of section .init.text:
+
+00000000 <init_module>:
+   0:	55                   	push   ebp
+   1:	b9 63 00 00 00       	mov    ecx,0x63
+   6:	ba 00 00 00 00       	mov    edx,0x0
+   b:	b8 00 00 00 00       	mov    eax,0x0
+  10:	89 e5                	mov    ebp,esp
+  12:	e8 fc ff ff ff       	call   13 <init_module+0x13>
+  17:	5d                   	pop    ebp
+  18:	c3                   	ret    
+
+Disassembly of section .exit.text:
+
+00000000 <cleanup_module>:
+   0:	55                   	push   ebp
+   1:	b8 00 00 00 00       	mov    eax,0x0
+   6:	89 e5                	mov    ebp,esp
+   8:	e8 fc ff ff ff       	call   9 <cleanup_module+0x9>
+   d:	5d                   	pop    ebp
+   e:	c3                   	ret    
