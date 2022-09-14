@@ -28,7 +28,10 @@ Monads
 
 Links:
 
-- [Intro to Monads for Rustaceans](https://www.youtube.com/watch?v=4Ky8kvDcshg)
+- Sage Mitchell's 2022 talk:
+  [_monads desmitified for Rustaceans curious about Haskell_](https://www.youtube.com/watch?v=4Ky8kvDcshg)
+  ([slides](https://docs.google.com/presentation/d/14ZkXOf16A25HZ4zbJUK7npnFv73bl25ONTya-7Ak1iA),
+  [copy](https://docs.google.com/presentation/d/1sBrpoqDXbRsJJIDAAFtO3kM4wSPyc2hX8gMjx3yD9Pc))
 
 Rust has some monad types (`Result`, `Option`), but not a generic and higher
 level concept of a monad.
