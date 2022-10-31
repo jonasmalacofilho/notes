@@ -117,3 +117,7 @@ Read more about:
 - `Monad a`
 
 Open `ghci` and execute `:doc Monad`.
+
+### TODO
+
+- constructor, chaining/bind function, injector function
