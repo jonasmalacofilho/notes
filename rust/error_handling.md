@@ -1,6 +1,20 @@
 Error handling
 ==============
 
+Considerations
+--------------
+
+- is the caller expected to resolve/handle the issue?
+- in order for that, does the caller need to differentiate between the possible
+  error causes?
+- it can sometimes be useful to think that `do_*()` should probably return
+  `Result` or, if there's a `try_do_*()`, panic (the latter should then return
+  `Result`); and that `get_*()`should probably return `Option` (e.g.
+  `Error::downcast` vs. `Error::downcast_ref`, or `slice::get`);
+- consider how the function will compose with the surrounding (fallible)
+  calling code (e.g. if the caller is expected to mostly use `Option`, consider
+  designing an API that also returns that).
+
 Enumeration
 -----------
 
