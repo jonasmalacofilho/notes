@@ -2,7 +2,7 @@
 _... for unique IDs with interesting properties._
 
 | Algorithm | Binary size | Textual size | Features | Crates |
-| --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | [Snowflake] | 64 bits | 16[^1] bytes | sortable | [snowflaked], [hexafreeze] |
 | [xid] | 96 bits | 20 bytes | sortable | [libxid] |
 | [MongoID] | 96 bits | 24 bytes | sortable | ... |
