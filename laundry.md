@@ -54,6 +54,11 @@ effective.
 Optional, *if not using pre-wash:* powdered Vanish to help with suitable stains or yellowed white
 items.
 
+Consult [Swisstest's Performance Overview of Soilings][1] for some idea on what washing parameters
+certain soilings are most sensitive to.
+
+[1]: https://www.swissatest.ch/files/downloads/1eb4838011a940be7a55edfa71c3cae8/Performance_Overview_of_Soilings.pdf
+
 Extra rinse
 -----------
 
