@@ -1,12 +1,10 @@
 Preface
 -------
 
-Prefer low-foam detergents for front-loading tumblers.
+Prefer low-foam detergents for high-efficiency washers and front-loading tumblers.
 
-Detergent amounts and temperatures bellow assume somewhat concentrated products with enzymes, which
-are fairly widely available in São Paulo & Rio for home use. They do *not* apply to highly
-concentrated formulations (e.g. some refills, high-volume professional products), nor to products
-without enzymes.
+Detergent amounts and temperatures bellow assume concentrated products for home use that contain
+enzymes (e.g. Tide Liquid, Seventh Generation, Omo Puro Cuidado).
 
 Check that the small text on the label matches the orders of magnitude listed
 here, and/or do your own testing.
