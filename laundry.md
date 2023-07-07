@@ -2,8 +2,8 @@ How I (currently) do laundry
 ============================
 _For when I'm away and others have to take over, and anyone else interesting in the subject._
 
-Preface
--------
+Introduction
+------------
 
 Prefer low-foam detergents for high-efficiency washers and front-loading tumblers.
 
