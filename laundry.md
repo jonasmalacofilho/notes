@@ -1,3 +1,7 @@
+How I (currently) do laundry
+============================
+_For when I'm away and others have to take over, and anyone else interesting in the subject._
+
 Preface
 -------
 
