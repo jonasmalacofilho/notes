@@ -8,7 +8,7 @@ with enzymes (e.g. Tide Original HE, Seventh Generation, Omo Puro Cuidado).
 
 Don't use fabric softeners.
 
-Consult Swisstest's "Performance Overview of Soilings" for some idea of what washing parameters
+Consult Swissatest's "Performance Overview of Soilings" for some idea of what washing parameters
 certain soilings are generally most sensitive to.[^1]
 
 Temperature
@@ -99,7 +99,7 @@ Reduce speeds during the night as needed for an acceptable noise level.
 References
 ----------
 
-[^1]: Swisstest, [Performance Overview of Soilings], 2014.
+[^1]: Swissatest, [Performance Overview of Soilings], 2014.
 
 [^2]: Scheid et al, [Textile Quality Depletion due to Household Machine Wash – Ways to Measure and
   Impacts of Wash Duration and Temperature on Textiles], 2016.
