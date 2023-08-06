@@ -4,6 +4,7 @@ A quasi-international en_US locale
 TL;DR:
 
 ```
+# /etc/locale.conf
 LANG=en_US.UTF-8
 LC_PAPER=en_GB.UTF-8
 LC_MEASUREMENT=en_GB.UTF-8
@@ -12,7 +13,9 @@ LC_TIME=en_AG.UTF-8
 
 ---
 
-Start of with the `en_US.UTF-8` locale:
+Enable the necessary locales in `/etc/locale.gen`, and regenerate the locales with `locale-gen`.
+
+Then, edit `/etc/locale.conf`, starting with the `en_US.UTF-8` locale:
 
 ```
 LANG=en_US.UTF-8
