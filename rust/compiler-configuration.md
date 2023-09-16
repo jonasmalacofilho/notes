@@ -17,11 +17,17 @@ Files: `.cargo/config.toml`, `~/.cargo/config.toml`
 ```toml
 [target.x86_64-unknown-linux-gnu]
 rustflags = [
-"-Ctarget-cpu=native",
+    # link with lld
+    "-Clink-arg=-fuse-ld=lld",
+    # but use --no-rosegment for better stack traces (see note on [cargo-]flamegraph's README and
+    # <https://bugs.chromium.org/p/chromium/issues/detail?id=919499#c16>)
+    "-Clink-arg=-Wl,--no-rosegment",
+    # also optimize for this uarch
+    "-Ctarget-cpu=native",
 ]
 ```
 
-## Specify linker or linker options
+## Linker and linker options
 
 LLVM LLD (Linux): `-Clink-arg=-fuse-ld=lld -Clink-arg=-Wl,--no-rosegment` (see note on
 [cargo-]flamegraph's README).
