@@ -1,0 +1,4 @@
+rsync:
+- rsync -PaHAX [--info=name0,progress2] <source>[/] <dst>/
+- rsync -PaHAX <src>[/] <dst>/ -v --dry-run --delete
+- rsync -PaHAX <src>[/] <dst>/ --exclude [/]<pattern> -v --dry-run --delete
