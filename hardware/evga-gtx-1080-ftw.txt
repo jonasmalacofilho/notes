@@ -1,0 +1,5 @@
+Thermal pads for EVGA GTX 1080 FTW:
+- pads: mostly 1 mm thick
+- pads: 2 mm thick for the backplate
+- pads: maybe 1.5 mm thick for improved memory cooling
+- pads: large height (110 mm), and considerable area of 1 mm pads
