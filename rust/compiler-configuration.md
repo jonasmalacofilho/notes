@@ -35,3 +35,24 @@ LLVM LLD (Linux): `-Clink-arg=-fuse-ld=lld -Clink-arg=-Wl,--no-rosegment` (see n
 GCC LD.GOLD: `-Clink-arg=-fuse-ld=gold`
 
 Delegate LTO to the linker: `-Clinker-plugin-lto`
+
+## Huge pages
+
+[Supposedly](https://kobzol.github.io/rust/rustc/2023/10/21/make-rust-compiler-5percent-faster.html),
+huge pages can make rust builds 5% faster (and up to 35% more memory hungry).
+
+Ensure Linux [Transparent Huge Pages] are enabled (`always` or at least on `madvise`):
+
+```
+echo /sys/kernel/mm/transparent_hugepage/enabled
+```
+
+Enable rustc's [jemalloc] use of transparent huge pages for all user mappings and jemalloc metadata:
+
+```
+export MALLOC_CONF="thp:always,metadata_thp:always"
+cargo build
+```
+
+[Transparent Huge Pages]: https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html
+[jemalloc]: https://jemalloc.net/jemalloc.3.html
