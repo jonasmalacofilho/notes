@@ -43,6 +43,9 @@ JSX
 
 JSX must always be parsed as a single root element.
 
+Strings can be passed in with `{}` curly braces; JSX automatically protects against inject attacks
+and escapes those contents. Objects can be passed in with `{{}}` double curly braces.
+
 JSX spread syntax can be used to forward props from one component to another:
 
 ```js
