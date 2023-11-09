@@ -138,9 +138,10 @@ Libraries and frameworks
 ------------------------
 [Libraries and frameworks]: #libraries-and-frameworks
 
-[MUI]: a library of based or pre-styled react ui components (mentioned by Caio).
+Material UI ([MUI]): a library of pre-styled React UI components implementing Google's Material
+Design. Recommended by Caio. Free core, paid extras.
 
-[Tailwind CSS]: a CSS framework that might play well with React.
+[Tailwind UI]: another library of pre-styled React UI components, based on [Tailwind CSS]. Paid.
 
 React-recommended full-stack frameworks support of client-side-only use cases:
 
@@ -190,6 +191,7 @@ Tutorials:
 [MUI]: https://mui.com/
 [Next.js]: https://nextjs.org/
 [Tailwind CSS]: https://tailwindcss.com/
+[Tailwind UI]: https://tailwindui.com/
 [Updating Arrays in State]: https://react.dev/learn/updating-arrays-in-state
 [Updating Objects in State]: https://react.dev/learn/updating-objects-in-state
 [`memo`]: https://react.dev/reference/react/memory
