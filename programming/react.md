@@ -143,12 +143,6 @@ Design. Recommended by Caio. Free core, paid extras.
 
 [Tailwind UI]: another library of pre-styled React UI components, based on [Tailwind CSS]. Paid.
 
-React-recommended full-stack frameworks support of client-side-only use cases:
-
-- [Next.js]: seems to be "usual" way to do it;
-- Gatsby: specifically for static websites, but with a strong focus on GraphQL;
-- Remix: very performance-oriented, but doesn't appear to support a "static" use case;
-
 
 Setup and workflow
 ------------------
@@ -189,7 +183,6 @@ Tutorials:
 [Effects]: https://react.dev/learn/synchronizing-with-effects
 [Extracting State Logic into a Reducer]: https://react.dev/learn/extracting-state-logic-into-a-reducer
 [MUI]: https://mui.com/
-[Next.js]: https://nextjs.org/
 [Tailwind CSS]: https://tailwindcss.com/
 [Tailwind UI]: https://tailwindui.com/
 [Updating Arrays in State]: https://react.dev/learn/updating-arrays-in-state
